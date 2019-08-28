@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
+  </head>
+  <body>
+  <script type="text/javascript">
+    AFRAME.registerComponent('drag-rotate-component',{
+      schema : { speed : {default:5}},
+      init : function(){
+        this.ifMouseDown = false;
+        this.x_cord = 0;
+        this.y_cord = 0;
+        document.addEventListener('mousedown',this.OnDocumentMouseDown.bind(this));
+        document.addEventListener('mouseup',this.OnDocumentMouseUp.bind(this));
+        document.addEventListener('mousemove',this.OnDocumentMouseMove.bind(this));
+      },
+      OnDocumentMouseDown : function(event){
+        this.ifMouseDown = true;
+        this.x_cord = event.clientX;
+        this.y_cord = event.clientY;
+      },
+      OnDocumentMouseUp : function(){
+        this.ifMouseDown = false;
+      },
+      OnDocumentMouseMove : function(event)
+      {
+        if(this.ifMouseDown)
+        {
+          var temp_x = event.clientX-this.x_cord;
+          var temp_y = event.clientY-this.y_cord;
+          if(Math.abs(temp_y)<Math.abs(temp_x))
+          {
+            this.el.object3D.rotateY(temp_x*this.data.speed/1000);
+          }
+          else
+          {
+            this.el.object3D.rotateX(temp_y*this.data.speed/1000);
+          }
+          this.x_cord = event.clientX;
+          this.y_cord = event.clientY;
+        }
+      }
+    });
+  </script>
+    <a-scene>
+      <a-assets>
+        <img id="sky" src="360_world.jpg">
+      </a-assets>
+      <a-sky src="#sky"></a-sky>
+      <a-assets>
+        <a-asset-item id="iphone" src="https://poly.googleusercontent.com/downloads/c/fp/1566899822825102/afD9xPVfxhj/8sgxOF84nAv/mobile-phone.gltf"></a-asset-item>
+      </a-assets>
+      <a-entity gltf-model="#iphone" scale="0.06 0.06 0.06" position="0 2 -4" drag-rotate-component >
+        
+      </a-entity>
+      <a-camera look-controls="enabled:false">
+        <a-cursor color="white"></a-cursor>
+      </a-camera>
+    </a-scene>
+  </body>
+</html>
